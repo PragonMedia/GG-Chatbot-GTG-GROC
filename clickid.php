@@ -6,22 +6,23 @@ if (session_status() !== PHP_SESSION_ACTIVE) session_start();
 
 /* --- Config --- */
 // Function to extract domain and route from current URL
-function getDomainAndRoute() {
+function getDomainAndRoute()
+{
   // Get domain from HTTP_HOST (includes .com)
   $domain = $_SERVER['HTTP_HOST'] ?? '';
-  
+
   // Remove www. prefix if present
   $domain = preg_replace('/^www\./', '', $domain);
-  
+
   // Extract route from REQUEST_URI
   $requestUri = $_SERVER['REQUEST_URI'] ?? '';
   $path = parse_url($requestUri, PHP_URL_PATH);
-  
+
   // Remove leading slash and get first segment
   $path = ltrim($path, '/');
   $segments = explode('/', $path);
   $route = $segments[0] ?? '';
-  
+
   // If route is empty or is a PHP file, try to get from referrer
   if (empty($route) || strpos($route, '.php') !== false) {
     $referrer = $_SERVER['HTTP_REFERER'] ?? '';
@@ -32,14 +33,15 @@ function getDomainAndRoute() {
       $route = $referrerSegments[0] ?? '';
     }
   }
-  
+
   return ['domain' => $domain, 'route' => $route];
 }
 
 // Function to fetch route data from API
-function fetchRouteData($domain, $route) {
-  $apiUrl = 'http://localhost:3000/api/v1/domain-route-details?domain=' . urlencode($domain) . '&route=' . urlencode($route);
-  
+function fetchRouteData($domain, $route)
+{
+  $apiUrl = 'http://138.68.231.226:3000/api/v1/domain-route-details?domain=' . urlencode($domain) . '&route=' . urlencode($route);
+
   $ch = curl_init($apiUrl);
   curl_setopt_array($ch, [
     CURLOPT_RETURNTRANSFER => true,
@@ -50,16 +52,16 @@ function fetchRouteData($domain, $route) {
       'Accept: application/json',
     ],
   ]);
-  
+
   $response = curl_exec($ch);
   $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
   $error = curl_error($ch);
   curl_close($ch);
-  
+
   if ($error || $httpCode !== 200) {
     return null;
   }
-  
+
   $data = json_decode($response, true);
   return $data;
 }

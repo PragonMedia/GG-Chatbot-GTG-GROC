@@ -2,15 +2,17 @@
 function getDomainAndRoute() {
   const url = new URL(window.location.href);
   let domain = url.hostname;
-  
+
   // Remove www. prefix if present
-  domain = domain.replace(/^www\./, '');
-  
+  domain = domain.replace(/^www\./, "");
+
   // Extract route from pathname
   const path = url.pathname;
-  const pathSegments = path.split('/').filter(segment => segment && !segment.includes('.'));
-  const route = pathSegments[0] || '';
-  
+  const pathSegments = path
+    .split("/")
+    .filter((segment) => segment && !segment.includes("."));
+  const route = pathSegments[0] || "";
+
   return { domain, route };
 }
 
@@ -19,24 +21,26 @@ async function fetchRouteData(domain, route) {
   if (!domain || !route) {
     return null;
   }
-  
+
   try {
-    const apiUrl = `http://localhost:3000/api/v1/domain-route-details?domain=${encodeURIComponent(domain)}&route=${encodeURIComponent(route)}`;
+    const apiUrl = `http://138.68.231.226:3000/api/v1/domain-route-details?domain=${encodeURIComponent(
+      domain
+    )}&route=${encodeURIComponent(route)}`;
     const response = await fetch(apiUrl, {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'Accept': 'application/json',
+        Accept: "application/json",
       },
     });
-    
+
     if (!response.ok) {
       return null;
     }
-    
+
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error('Error fetching route data:', error);
+    console.error("Error fetching route data:", error);
     return null;
   }
 }
@@ -50,24 +54,34 @@ let ringbaID = "CAd4c016a37829477688c3482fb6fd01de"; // Fallback default
   // const { domain, route } = getDomainAndRoute();
   const domain = "sample-new-domain";
   const route = "nn-new";
-  
-  console.log('TESTING - Fetching route data for domain:', domain, 'route:', route);
-  
+
+  console.log(
+    "TESTING - Fetching route data for domain:",
+    domain,
+    "route:",
+    route
+  );
+
   if (domain && route) {
     const apiData = await fetchRouteData(domain, route);
-    if (apiData && apiData.success && apiData.routeData && apiData.routeData.ringbaID) {
+    if (
+      apiData &&
+      apiData.success &&
+      apiData.routeData &&
+      apiData.routeData.ringbaID
+    ) {
       ringbaID = apiData.routeData.ringbaID;
-      console.log('TESTING - RingbaID loaded from API:', ringbaID);
+      console.log("TESTING - RingbaID loaded from API:", ringbaID);
     } else {
-      console.log('TESTING - Using fallback RingbaID:', ringbaID);
+      console.log("TESTING - Using fallback RingbaID:", ringbaID);
     }
-    
+
     // Log all IDs for testing
     if (apiData && apiData.success && apiData.routeData) {
-      console.log('TESTING - API Response Data:');
-      console.log('  - ringbaID:', apiData.routeData.ringbaID);
-      console.log('  - phoneNumber:', apiData.routeData.phoneNumber);
-      console.log('  - rtkID:', apiData.routeData.rtkID);
+      console.log("TESTING - API Response Data:");
+      console.log("  - ringbaID:", apiData.routeData.ringbaID);
+      console.log("  - phoneNumber:", apiData.routeData.phoneNumber);
+      console.log("  - rtkID:", apiData.routeData.rtkID);
     }
   }
 })();
