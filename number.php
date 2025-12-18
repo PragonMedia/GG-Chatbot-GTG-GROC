@@ -46,7 +46,7 @@ function getDomainAndRoute()
 // Function to fetch route data from API
 function fetchRouteData($domain, $route)
 {
-  $apiUrl = 'http://138.68.231.226:3000/api/v1/domain-route-details?domain=' . urlencode($domain) . '&route=' . urlencode($route);
+  $apiUrl = 'http://localhost:3000/api/v1/domain-route-details?domain=' . urlencode($domain) . '&route=' . urlencode($route);
 
   $ch = curl_init($apiUrl);
   curl_setopt_array($ch, [
@@ -72,14 +72,10 @@ function fetchRouteData($domain, $route)
   return $data;
 }
 
-// HARD CODED FOR TESTING - Extract domain and route
-// $domainRoute = getDomainAndRoute();
-// $domain = $domainRoute['domain'];
-// $route = $domainRoute['route'];
-
-// TESTING: Hard coded values
-$domain = "sample-new-domain";
-$route = "nn-new";
+// Extract domain and route from URL
+$domainRoute = getDomainAndRoute();
+$domain = $domainRoute['domain'];
+$route = $domainRoute['route'];
 
 // Fetch route data from API
 $routeData = null;
