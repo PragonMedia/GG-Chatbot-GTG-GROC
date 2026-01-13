@@ -25,26 +25,27 @@
         j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
         f.parentNode.insertBefore(j, f);
       })(window, document, "script", "dataLayer", "GTM-MC55FSL5");
-
-      // Add gtgTrigger class to phone-number element
-      (function () {
-        function addGtgTrigger() {
-          const phoneNumberElement = document.getElementById("phone-number");
-          if (phoneNumberElement) {
-            phoneNumberElement.classList.add("gtgTrigger");
-            console.log("gtgTrigger added to phone number");
-          }
-        }
-
-        // Try immediately if DOM is ready
-        if (document.readyState === "loading") {
-          document.addEventListener("DOMContentLoaded", addGtgTrigger);
-        } else {
-          addGtgTrigger();
-        }
-      })();
     </script>
     <!-- End Google Tag Manager -->
+    
+    <script>
+      // Function to track GTG click event
+      function trackGTG(e) {
+        e.preventDefault(); // stop the phone from dialing immediately
+
+        window.dataLayer = window.dataLayer || [];
+        dataLayer.push({
+          event: "gtg_clicked",
+        });
+
+        fbq("track", "Lead");
+
+        // allow tracking to fire before dialing
+        setTimeout(() => {
+          window.location.href = document.getElementById("phone-number").href;
+        }, 150);
+      }
+    </script>
 
     <!-- CRITICAL: Capture ALL original URL parameters IMMEDIATELY on page load -->
     <!-- This must run before any other scripts to preserve tracking parameters -->
@@ -750,7 +751,7 @@
                       <a
                         id="phone-number"
                         href="tel:+18887062564"
-                        onclick="fbq('track', 'Lead');"
+                        onclick="trackGTG(event)"
                         class="chat-button text-white font-bold bg-blue-500 rounded-full py-3 px-6 ttc-button phone-number gtgTrigger"
                         style="
                           background: #1e8ff4 !important;
