@@ -29,22 +29,27 @@
     <!-- End Google Tag Manager -->
     
     <script>
-      // Function to track GTG click event
-      function trackGTG(e) {
-        e.preventDefault(); // stop the phone from dialing immediately
+    function trackGTG(e) {
+  e.preventDefault();
 
-        window.dataLayer = window.dataLayer || [];
-        dataLayer.push({
-          event: "gtg_clicked",
-        });
+  const phoneLink = document.getElementById("phone-number").href;
 
-        fbq("track", "Lead");
+  // Always push GTM event first
+  window.dataLayer = window.dataLayer || [];
+  dataLayer.push({ event: "gtg_clicked" });
 
-        // allow tracking to fire before dialing
-        setTimeout(() => {
-          window.location.href = document.getElementById("phone-number").href;
-        }, 150);
-      }
+  // Fire Facebook pixel safely
+  try {
+    if (typeof fbq === "function") {
+      fbq("track", "Lead");
+    }
+  } catch (e) {}
+
+  // Always dial, even if tracking fails
+  setTimeout(() => {
+    window.location.href = phoneLink;
+  }, 150);
+}
     </script>
 
     <!-- CRITICAL: Capture ALL original URL parameters IMMEDIATELY on page load -->
