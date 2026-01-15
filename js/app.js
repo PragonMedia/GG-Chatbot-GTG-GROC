@@ -619,15 +619,15 @@ function attachPhoneButtonListener() {
 
         // For tel: links, allow default behavior (phone dialer opens)
         // Don't prevent default so the link works normally
-        if (href.startsWith("tel:")) {
-          // Track conversion without preventing default
-          if (qualifiedParam !== "no" && typeof gtag === "function") {
-            gtag("event", "conversion", {
-              send_to: "AW-16921817895/4s4iCJv-wb8bEKfm-YQ_",
-              value: 1.0,
-              currency: "USD",
-            });
-          }
+        // if (href.startsWith("tel:")) {
+        //   // Track conversion without preventing default
+        //   if (qualifiedParam !== "no" && typeof gtag === "function") {
+        //     gtag("event", "conversion", {
+        //       send_to: "AW-16921817895/4s4iCJv-wb8bEKfm-YQ_",
+        //       value: 1.0,
+        //       currency: "USD",
+        //     });
+        //   }
 
           // Allow the tel: link to work normally (don't prevent default)
           return;
