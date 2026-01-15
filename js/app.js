@@ -603,14 +603,14 @@ function attachPhoneButtonListener() {
       const href = this.getAttribute("href");
       if (href) {
         // Execute existing onclick handler if present (for fbq tracking)
-        const existingOnclick = this.getAttribute("onclick");
-        if (existingOnclick) {
-          try {
-            eval(existingOnclick);
-          } catch (err) {
-            console.error("Error executing existing onclick:", err);
-          }
-        }
+        // const existingOnclick = this.getAttribute("onclick");
+        // if (existingOnclick) {
+        //   try {
+        //     eval(existingOnclick);
+        //   } catch (err) {
+        //     console.error("Error executing existing onclick:", err);
+        //   }
+        // }
 
         // Check if user answered "No" to Medicare Part A and Part B question
         const qualifiedParam = new URL(window.location.href).searchParams.get(
