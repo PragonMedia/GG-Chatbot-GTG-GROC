@@ -513,44 +513,45 @@ $("button.chat-button").on("click", function () {
       }
     }
 
-    // Ringba is now loaded only when we show the phone button (inside updatePhoneNumberReactive), not here
-    scrollToBottom();
-
-    setTimeout(function () {
-      $("#agentBlock4").removeClass("hidden");
+    // For "Yes" on Medicare: run number.php, loadRingba(), and ringba-trigger API now (before showing messages). For "No" we run it later when we show msg17 (step 4 path).
+    (async function () {
+      if (buttonValue == "Yes") {
+        await updatePhoneNumberReactive();
+      }
       scrollToBottom();
+
       setTimeout(function () {
-        $(".temp-typing").remove();
-        $("#msg13").removeClass("hidden").after(typingEffect());
+        $("#agentBlock4").removeClass("hidden");
         scrollToBottom();
         setTimeout(function () {
           $(".temp-typing").remove();
-          $("#msg14").removeClass("hidden").after(typingEffect());
+          $("#msg13").removeClass("hidden").after(typingEffect());
           scrollToBottom();
           setTimeout(function () {
             $(".temp-typing").remove();
-            // Show different message based on Yes/No answer
-            if (buttonValue == "Yes") {
-              $("#msg15").removeClass("hidden").after(typingEffect());
-            } else if (buttonValue == "No") {
-              $("#msg15_no").removeClass("hidden").after(typingEffect());
-            }
+            $("#msg14").removeClass("hidden").after(typingEffect());
             scrollToBottom();
             setTimeout(function () {
               $(".temp-typing").remove();
-              // Show phone button for "Yes", CLAIM NOW button for "No"
               if (buttonValue == "Yes") {
-                $("#msg17").before(typingEffect());
-                scrollToBottom();
-                setTimeout(function () {
-                  $(".temp-typing").remove();
-                  // Update phone number reactively before showing button
-                  updatePhoneNumberReactive();
-                  $("#msg17").removeClass("hidden");
-                  scrollToBottom();
-                  startCountdown();
-                }, 500);
+                $("#msg15").removeClass("hidden").after(typingEffect());
               } else if (buttonValue == "No") {
+                $("#msg15_no").removeClass("hidden").after(typingEffect());
+              }
+              scrollToBottom();
+              setTimeout(function () {
+                $(".temp-typing").remove();
+                if (buttonValue == "Yes") {
+                  // number.php, loadRingba, API already done when they clicked Yes
+                  $("#msg17").before(typingEffect());
+                  scrollToBottom();
+                  setTimeout(function () {
+                    $(".temp-typing").remove();
+                    $("#msg17").removeClass("hidden");
+                    scrollToBottom();
+                    startCountdown();
+                  }, 500);
+                } else if (buttonValue == "No") {
                 // Get gtg value from localStorage
                 const gtgValue = localStorage.getItem("gtg");
 
@@ -590,6 +591,7 @@ $("button.chat-button").on("click", function () {
         }, speed);
       }, speed);
     }, speed);
+    })();
 
     // Update the URL with the new qualified parameter
     window.history.replaceState({}, "", newUrl);
