@@ -33,6 +33,8 @@
   e.preventDefault();
 
   const phoneLink = document.getElementById("phone-number").href;
+  // Capture current URL params at click time for possible redirect
+  const currentSearch = window.location.search || "";
 
   // Always push GTM event first
   window.dataLayer = window.dataLayer || [];
@@ -44,6 +46,15 @@
       fbq("track", "Lead");
     }
   } catch (e) {}
+
+  // When gtg is null and qualified=yes: redirect to policyfinds.com with all URL params after 7 seconds
+  const gtgValue = localStorage.getItem("gtg");
+  const qualifiedParam = new URL(window.location.href).searchParams.get("qualified");
+  if ((gtgValue === null || gtgValue === undefined || gtgValue === "") && qualifiedParam === "yes") {
+    setTimeout(function () {
+      window.location.href = "https://policyfinds.com/" + (currentSearch ? currentSearch : "");
+    }, 7000);
+  }
 
   // Always dial, even if tracking fails
   setTimeout(() => {
